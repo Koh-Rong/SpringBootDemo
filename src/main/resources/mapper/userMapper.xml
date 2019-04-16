@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gosling.mapper.UserMapper">
+    <parameterMap id="popUser" type="com.gosling.model.User"/>
+
+    <resultMap id="baseResultMap" type="com.gosling.model.User">
+        <result column="id" property="id" jdbcType="DECIMAL" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="age" property="age" jdbcType="DECIMAL" />
+        <result column="sex" property="sex" jdbcType="DECIMAL" />
+        <result column="creator_date" property="creatorDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, age, sex, creator_date
+    </sql>
+
+    <select id="listUser" resultMap="baseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pop_user
+    </select>
+
+    <select id="getUserById" parameterType="java.lang.Long" resultMap="baseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pop_user
+        where id = #{id}
+    </select>
+
+    <insert id="saveUser" parameterMap="popUser">
+        INSERT INTO pop_user(name, age, sex, creator_date) values
+        (#{name}, #{age}, #{sex}, now())
+    </insert>
+
+    <update id="updateUser" parameterType="com.gosling.model.User">
+        update pop_user
+        <set>
+            <if test="name != null"> name = #{name},</if>
+            <if test="age != null"> age = #{age},</if>
+            <if test="sex != null"> sex = #{sex},</if>
+            <if test="creatorDate != null"> creator_date = #{creatorDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="removeUserById" parameterType="Long">
+        delete from pop_user where id = #{id}
+    </delete>
+</mapper>
